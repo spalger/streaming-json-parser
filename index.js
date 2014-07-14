@@ -397,8 +397,6 @@ proto.onToken = function (token, value) {
     case LEFT_BRACKET:
       this.push();
 
-      this.mode = ARRAY;
-      this.key = 0;
       if (this.stack.length >= this.path.length) {
         if (this.value) {
           this.value = this.value[this.key] = [];
@@ -406,6 +404,9 @@ proto.onToken = function (token, value) {
           this.value = [];
         }
       }
+
+      this.mode = ARRAY;
+      this.key = 0;
 
       if (this.check()) {
         this.state = VALUE;
@@ -482,18 +483,12 @@ proto.check = function () {
   var x = this.path[this.stack.length - 1],
       y = this.key;
 
-  if (x === undefined)
-    return true
-  if ('string' === typeof x)
-    return y === x
-  if (x && 'function' === typeof x.exec)
-    return x.exec(y)
-  if ('boolean' === typeof x)
-    return x
-  if ('function' === typeof x)
-    return x(y)
-  return false
-
-}
+  if (x === undefined) return true;
+  if ('string' === typeof x) return y === x;
+  if (x && 'function' === typeof x.exec) return x.exec(y);
+  if ('boolean' === typeof x) return x;
+  if ('function' === typeof x) return x(y);
+  return false;
+};
 
 module.exports = Parser;
